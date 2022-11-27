@@ -1,0 +1,815 @@
+  local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/VisualRoblox/Roblox/main/UI-Libraries/Visual%20Command%20UI%20Library/Source.lua', true))()
+
+local Window = Library:CreateWindow({
+    Name = 'TeaClub',
+    IntroText = 'TeaClub',
+    IntroIcon = 'http://www.roblox.com/asset/?id=7157206429',
+    IntroBlur = true,
+    IntroBlurIntensity = 15,
+    Theme = Library.Themes.scriptware,
+    Position = 'bottom',
+    Draggable = true,
+    Prefix = ';'
+})
+
+--Commands
+
+Window:AddCommand('Print', {'Text'}, 'Prints a Text', function(Arguments, Speaker)
+    print(Arguments[1]) 
+end)
+
+Window:AddCommand('walkspeed', {'Amount'}, 'Makes You Faster', function(Arguments, Speaker)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Arguments[1])
+end)
+ 
+Window:AddCommand('JumpPower', {'Amount'}, 'Makes You Jump', function(Arguments, Speaker)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = (Arguments[1])
+end)
+
+Window:AddCommand('Reset', {}, 'Kills Yourself', function(Arguments, Speaker)
+    game.Players.LocalPlayer.Character.Humanoid.Health = 0
+end)
+
+Window:AddCommand('Notify', {}, 'Notify yourself', function(Arguments, Speaker)
+    Window:CreateNotification('TeaClub', 'Notification', 5)
+end)
+
+Window:AddCommand('Fly', {}, 'LeftAlt To Fly | LeftControl To Fastfly', function(Arguments, Speaker)
+	local Settings = {
+	
+	Speed = 5,
+	SprintSpeed = 30,
+	ToggleKey = Enum.KeyCode.LeftAlt,
+	SprintKey = Enum.KeyCode.LeftControl,
+	
+	ForwardKey = Enum.KeyCode.W,
+	LeftKey = Enum.KeyCode.A,
+	BackwardKey = Enum.KeyCode.S,
+	RightKey = Enum.KeyCode.D,
+	UpKey = Enum.KeyCode.E,
+	DownKey = Enum.KeyCode.Q,
+	
+}
+
+local Screen = Instance.new("ScreenGui",game.CoreGui)
+local Distance = Instance.new("TextLabel",Screen)
+Distance.BackgroundTransparency = 1
+Distance.Size = UDim2.new(0,10,0,10)
+Distance.ZIndex = 2
+Distance.Text = "0"
+Distance.TextStrokeTransparency = .5
+Distance.TextSize = 20
+Distance.TextStrokeColor3 = Color3.fromRGB(33, 33, 33)
+Distance.Font = Enum.Font.Gotham
+Distance.TextColor3 = Color3.new(1,1,1)
+Distance.TextXAlignment = Enum.TextXAlignment.Left
+Distance.TextYAlignment = Enum.TextYAlignment.Top
+
+
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local Direction = Vector3.new(0,0,0)
+local InterpolatedDir = Direction
+local Tilt = 0
+local InterpolatedTilt = Tilt
+local RunService = game:GetService("RunService")
+local Toggled = false
+local Sprinting = false
+local CameraPos = game.Workspace.CurrentCamera.CFrame.Position
+
+pcall(function()
+	game.Players.LocalPlayer.DevCameraOcclusionMode = Enum.DevCameraOcclusionMode.Invisicam	
+end)
+
+function Lerp(a, b, t)
+    return a + (b - a) * t
+end
+
+local LastPos = nil
+
+function KeyHandler(actionName, userInputState)
+	if true and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		if actionName == "Toggle" and userInputState == Enum.UserInputState.Begin then
+			Toggled = not Toggled
+			if Toggled then
+				LastPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+				--game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+				game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true 
+			else
+				LastPos = nil
+				game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+				--game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+			end
+		elseif actionName == "Forward" then
+			Tilt = userInputState == Enum.UserInputState.Begin and -20 or 0
+			Direction = Vector3.new(Direction.x,Direction.y,userInputState == Enum.UserInputState.Begin and -1 or 0)
+		elseif actionName == "Left" then
+			Direction = Vector3.new(userInputState == Enum.UserInputState.Begin and -1 or 0,Direction.y,Direction.z)
+		elseif actionName == "Backward" then
+			Tilt = userInputState == Enum.UserInputState.Begin and 20 or 0
+			Direction = Vector3.new(Direction.x,Direction.y,userInputState == Enum.UserInputState.Begin and 1 or 0)
+		elseif actionName == "Right" then
+			Direction = Vector3.new(userInputState == Enum.UserInputState.Begin and 1 or 0,Direction.y,Direction.z)
+		elseif actionName == "Up" then
+			Direction = Vector3.new(Direction.x,userInputState == Enum.UserInputState.Begin and 1 or 0,Direction.z)
+		elseif actionName == "Down" then
+			Direction = Vector3.new(Direction.x,userInputState == Enum.UserInputState.Begin and -1 or 0,Direction.z)
+		elseif actionName == "Sprint" then
+			Sprinting = userInputState == Enum.UserInputState.Begin
+		end
+	end
+end
+
+
+
+game:GetService("UserInputService").InputBegan:connect(function(inputObject, gameProcessedEvent)
+	
+	if inputObject.KeyCode == Settings.ToggleKey then
+		KeyHandler("Toggle", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.ForwardKey then
+		KeyHandler("Forward", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.LeftKey then
+		KeyHandler("Left", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.BackwardKey then
+		KeyHandler("Backward", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.RightKey then
+		KeyHandler("Right", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.UpKey then	
+		KeyHandler("Up", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.DownKey then
+		KeyHandler("Down", Enum.UserInputState.Begin, inputObject)
+	elseif inputObject.KeyCode == Settings.SprintKey then
+		KeyHandler("Sprint", Enum.UserInputState.Begin, inputObject)
+	end
+	
+	
+end)
+
+
+game:GetService("UserInputService").InputEnded:connect(function(inputObject, gameProcessedEvent)
+	
+	if inputObject.KeyCode == Settings.ToggleKey then
+		KeyHandler("Toggle", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.ForwardKey then
+		KeyHandler("Forward", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.LeftKey then
+		KeyHandler("Left", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.BackwardKey then
+		KeyHandler("Backward", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.RightKey then
+		KeyHandler("Right", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.UpKey then	
+		KeyHandler("Up", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.DownKey then
+		KeyHandler("Down", Enum.UserInputState.End, inputObject)
+	elseif inputObject.KeyCode == Settings.SprintKey then
+		KeyHandler("Sprint", Enum.UserInputState.End, inputObject)
+	end
+	
+	
+end)
+
+
+RunService.RenderStepped:Connect(function()
+	if Toggled and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")  then
+		for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+			if v:IsA("BasePart") then
+				v.Velocity = Vector3.new(0,0,0)
+			end
+		end
+		local RootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+		if LastPos then
+			Distance.Text = math.floor((LastPos-RootPart.Position).Magnitude+.5)
+			if (LastPos-RootPart.Position).Magnitude >= 350 then
+				Distance.TextColor3 = Color3.new(1,0,0)
+			else
+				Distance.TextColor3 = Color3.new(1,1,1)	
+			end
+		else
+			Distance.TextColor3 = Color3.new(1,1,1)
+			Distance.Text = 0
+		end
+		InterpolatedDir = InterpolatedDir:Lerp((Direction * (Sprinting and Settings.SprintSpeed or Settings.Speed)),.2)
+		InterpolatedTilt = Lerp(InterpolatedTilt ,Tilt* (Sprinting and 2 or 1),Tilt == 0 and .2 or .1)
+		RootPart.CFrame = RootPart.CFrame:Lerp(CFrame.new(RootPart.Position,RootPart.Position + Mouse.UnitRay.Direction) * CFrame.Angles(0,math.rad(00),0) * CFrame.new(InterpolatedDir)  * CFrame.Angles(math.rad(InterpolatedTilt),0,0),.2)
+	else
+		Distance.TextColor3 = Color3.new(1,1,1)
+		Distance.Text = 0
+	end	
+end)
+ 
+end)
+
+Window:AddCommand('NoRightLeg', {}, 'Removes your right leg.', function(Arguments, Speaker)
+    game:GetService'Players'.LocalPlayer.Character['Right Leg']:Destroy()
+end)
+
+Window:AddCommand('NoLeftLeg', {}, 'Removes your left leg.', function(Arguments, Speaker)
+    game:GetService'Players'.LocalPlayer.Character['Left Leg']:Destroy()
+end)
+
+Window:AddCommand('NoRightArm', {}, 'Removes your Right arm.', function(Arguments, Speaker)
+    game:GetService'Players'.LocalPlayer.Character['Right Arm']:Destroy()
+end)
+
+Window:AddCommand('NoLeftArm', {}, 'Removes your Left arm.', function(Arguments, Speaker)
+    game:GetService'Players'.LocalPlayer.Character['Left Arm']:Destroy()
+end)
+
+Window:AddCommand('TpTool', {}, 'Click To Teleport.', function(Arguments, Speaker)
+	mouse = game.Players.LocalPlayer:GetMouse()
+	tool = Instance.new("Tool")
+	tool.RequiresHandle = false
+	tool.Name = "Click Teleport"
+	tool.Activated:connect(function()
+	local pos = mouse.Hit+Vector3.new(0,2.5,0)
+	pos = CFrame.new(pos.X,pos.Y,pos.Z)
+	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+	end)
+	tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+
+Window:AddCommand('Reach', {'Reset To Remove'}, 'Makes your range long.', function(Arguments, Speaker)
+    for i,v in pairs(game:GetService'Players'.LocalPlayer.Character:GetChildren())do
+				if v:isA("Tool") then
+					local a = Instance.new("SelectionBox",v.Handle)
+					a.Adornee = v.Handle
+					v.Handle.Size = Vector3.new(0.5,0.5,60)
+					v.GripPos = Vector3.new(0,0,0)
+					lplayer.Character.Humanoid:UnequipTools()
+				end
+			end
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+			Title = "Notification";
+			Text = "Applied to equipped sword.";
+			})
+end)
+
+Window:AddCommand('Dex', {}, 'Explore Around And Steal Scripts.', function(Arguments, Speaker)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()
+end)
+
+Window:AddCommand('EnableShiftLock', {}, 'Enable your shiftlock when is setted by developer.', function(Arguments, Speaker)
+    game:GetService('Players').LocalPlayer.DevEnableMouseLock = true
+end)
+
+Window:AddCommand('UnEnableShiftLock', {}, 'UnEnables your shiftlock.', function(Arguments, Speaker)
+    game:GetService('Players').LocalPlayer.DevEnableMouseLock = false
+end)
+
+Window:AddCommand('TeleportGui', {}, 'Teleports you to a player.', function(Arguments, Speaker)
+	loadstring(game:GetObjects('rbxassetid://1730381293')[1].Source)()
+end)
+
+Window:AddCommand('Float', {}, 'Q to turn on E to turn off.', function(Arguments, Speaker)
+	bruh = Instance.new('Part', game.Workspace)
+bruh.Name = "bruh"
+bruh.Size = Vector3.new(6,.1,6)
+bruh.Color = Color3.fromRGB(100,166,200)
+bruh.Anchored = true
+bruh.Transparency = 1 --set to whatever lol
+loop = false
+a = game.Players.LocalPlayer:GetMouse()
+a.KeyDown:Connect(function(black)
+   if black == "q" then
+       loop = true
+       while loop do
+           wait()
+bruh.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0,-3.05,0)
+end
+elseif black == "e" and loop == true then
+   print("turned off loop")
+   loop = false
+end
+end)
+end)
+
+Window:AddCommand('sword', {}, 'kill people with a sword Also CLIENT SIDED.', function(Arguments, Speaker)
+    loadstring(game:HttpGet(('https://raw.githubusercontent.com/CJFabro8/Client-Things/main/swordy'),true))()
+end)
+
+Window:AddCommand('Invisible', {}, 'Become Invisible Also CLIENT SIDED.', function(Arguments, Speaker)
+    Player=game:GetService("Players").LocalPlayer --hi
+Character=Player.Character
+PlayerGui=Player.PlayerGui
+Backpack=Player.Backpack
+Torso=Character.Torso
+Head=Character.Head
+Humanoid=Character.Humanoid
+m=Instance.new('Model',Character)
+LeftArm=Character["Left Arm"]
+LeftLeg=Character["Left Leg"]
+RightArm=Character["Right Arm"]
+RightLeg=Character["Right Leg"]
+LS=Torso["Left Shoulder"]
+LH=Torso["Left Hip"]
+RS=Torso["Right Shoulder"]
+RH=Torso["Right Hip"]
+function Weld(x,y)
+       local W = Instance.new("Weld")
+       W.Part0 = x
+       W.Part1 = y
+       local CJ = CFrame.new(x.Position)
+       local C0 = x.CFrame:inverse()*CJ
+       local C1 = y.CFrame:inverse()*CJ
+       W.C0 = C0
+       W.C1 = C1
+       W.Parent = x
+end
+Head.Transparency=1
+Torso.Transparency=1
+RightArm.Transparency=1
+LeftArm.Transparency=1
+RightLeg.Transparency=1
+LeftLeg.Transparency=1
+
+for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+if v:IsA("Accessory") and v.Handle:FindFirstChild("SpecialMesh") then
+v:Destroy()
+end
+end
+
+for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+if v:IsA("Accessory") and v.Handle:FindFirstChild("Mesh") then
+v:Destroy()
+end
+end
+
+end)
+
+Window:AddCommand('NormalFace', {}, 'makes your face normal Also CLIENT SIDED.', function(Arguments, Speaker)
+    local Client = game:GetService('Players').LocalPlayer
+
+local function onCharacterAdded()
+   local Head = Client.Character:WaitForChild('Head')
+   wait(0.5)
+   Head.face.Texture = 'rbxasset://textures/face.png'
+end
+
+if Client.Character then
+   onCharacterAdded(Client.Character)
+end
+
+Client.CharacterAdded:Connect(onCharacterAdded)
+
+end)
+
+Window:AddCommand('ScaryFace', {}, 'makes your face scary Also CLIENT SIDED.', function(Arguments, Speaker)
+    local Client = game:GetService('Players').LocalPlayer
+
+local function onCharacterAdded()
+   local Head = Client.Character:WaitForChild('Head')
+   wait(0.5)
+   Head.face.Texture = 'http://www.roblox.com/asset/?id=4749623118'
+end
+
+if Client.Character then
+   onCharacterAdded(Client.Character)
+end
+
+Client.CharacterAdded:Connect(onCharacterAdded)
+
+end)
+
+Window:AddCommand('A60Face', {}, 'makes your face A60 Also CLIENT SIDED.', function(Arguments, Speaker)
+    local Client = game:GetService('Players').LocalPlayer
+
+local function onCharacterAdded()
+   local Head = Client.Character:WaitForChild('Head')
+   wait(0.5)
+   Head.face.Texture = 'http://www.roblox.com/asset/?id=11173116926'
+end
+
+if Client.Character then
+   onCharacterAdded(Client.Character)
+end
+
+Client.CharacterAdded:Connect(onCharacterAdded)
+
+end)
+
+Window:AddCommand('NoclipGui', {}, 'noclip to what ever.', function(Arguments, Speaker)
+	local Workspace = game:GetService("Workspace")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local Noclip = Instance.new("ScreenGui")
+local BG = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local Toggle = Instance.new("TextButton")
+local StatusPF = Instance.new("TextLabel")
+local Status = Instance.new("TextLabel")
+local Credit = Instance.new("TextLabel")
+local Plr = Players.LocalPlayer
+local Clipon = false
+
+Noclip.Name = "Noclip"
+Noclip.Parent = game.CoreGui
+
+BG.Name = "BG"
+BG.Parent = Noclip
+BG.BackgroundColor3 = Color3.new(0.0980392, 0.0980392, 0.0980392)
+BG.BorderColor3 = Color3.new(0.0588235, 0.0588235, 0.0588235)
+BG.BorderSizePixel = 2
+BG.Position = UDim2.new(0.149479166, 0, 0.82087779, 0)
+BG.Size = UDim2.new(0, 210, 0, 127)
+BG.Active = true
+BG.Draggable = true
+
+Title.Name = "Title"
+Title.Parent = BG
+Title.BackgroundColor3 = Color3.new(0.266667, 0.00392157, 0.627451)
+Title.BorderColor3 = Color3.new(0.180392, 0, 0.431373)
+Title.BorderSizePixel = 2
+Title.Size = UDim2.new(0, 210, 0, 33)
+Title.Font = Enum.Font.Highway
+Title.FontSize = Enum.FontSize.Size32
+Title.Text = "Noclip"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextSize = 30
+Title.TextStrokeColor3 = Color3.new(0.180392, 0, 0.431373)
+Title.TextStrokeTransparency = 0
+
+Toggle.Parent = BG
+Toggle.BackgroundColor3 = Color3.new(0.266667, 0.00392157, 0.627451)
+Toggle.BorderColor3 = Color3.new(0.180392, 0, 0.431373)
+Toggle.BorderSizePixel = 2
+Toggle.Position = UDim2.new(0.152380958, 0, 0.374192119, 0)
+Toggle.Size = UDim2.new(0, 146, 0, 36)
+Toggle.Font = Enum.Font.Highway
+Toggle.FontSize = Enum.FontSize.Size28
+Toggle.Text = "Toggle"
+Toggle.TextColor3 = Color3.new(1, 1, 1)
+Toggle.TextSize = 25
+Toggle.TextStrokeColor3 = Color3.new(0.180392, 0, 0.431373)
+Toggle.TextStrokeTransparency = 0
+
+StatusPF.Name = "StatusPF"
+StatusPF.Parent = BG
+StatusPF.BackgroundColor3 = Color3.new(1, 1, 1)
+StatusPF.BackgroundTransparency = 1
+StatusPF.Position = UDim2.new(0.314285725, 0, 0.708661377, 0)
+StatusPF.Size = UDim2.new(0, 56, 0, 20)
+StatusPF.Font = Enum.Font.Highway
+StatusPF.FontSize = Enum.FontSize.Size24
+StatusPF.Text = "Status:"
+StatusPF.TextColor3 = Color3.new(1, 1, 1)
+StatusPF.TextSize = 20
+StatusPF.TextStrokeColor3 = Color3.new(0.333333, 0.333333, 0.333333)
+StatusPF.TextStrokeTransparency = 0
+StatusPF.TextWrapped = true
+
+Status.Name = "Status"
+Status.Parent = BG
+Status.BackgroundColor3 = Color3.new(1, 1, 1)
+Status.BackgroundTransparency = 1
+Status.Position = UDim2.new(0.580952346, 0, 0.708661377, 0)
+Status.Size = UDim2.new(0, 56, 0, 20)
+Status.Font = Enum.Font.Highway
+Status.FontSize = Enum.FontSize.Size14
+Status.Text = "off"
+Status.TextColor3 = Color3.new(0.666667, 0, 0)
+Status.TextScaled = true
+Status.TextSize = 14
+Status.TextStrokeColor3 = Color3.new(0.180392, 0, 0.431373)
+Status.TextWrapped = true
+Status.TextXAlignment = Enum.TextXAlignment.Left
+
+Credit.Name = "Credit"
+Credit.Parent = BG
+Credit.BackgroundColor3 = Color3.new(1, 1, 1)
+Credit.BackgroundTransparency = 1
+Credit.Position = UDim2.new(0.195238099, 0, 0.866141737, 0)
+Credit.Size = UDim2.new(0, 128, 0, 17)
+Credit.Font = Enum.Font.SourceSans
+Credit.FontSize = Enum.FontSize.Size18
+Credit.Text = "Created by dacked"
+Credit.TextColor3 = Color3.new(1, 1, 1)
+Credit.TextSize = 16
+Credit.TextStrokeColor3 = Color3.new(0.196078, 0.196078, 0.196078)
+Credit.TextStrokeTransparency = 0
+Credit.TextWrapped = true
+
+Toggle.MouseButton1Click:connect(function()
+if Status.Text == "off" then
+Clipon = true
+Status.Text = "on"
+Status.TextColor3 = Color3.new(0,185,0)
+Stepped = game:GetService("RunService").Stepped:Connect(function()
+if not Clipon == false then
+for a, b in pairs(Workspace:GetChildren()) do
+                if b.Name == Plr.Name then
+                for i, v in pairs(Workspace[Plr.Name]:GetChildren()) do
+                if v:IsA("BasePart") then
+                v.CanCollide = false
+                end end end end
+else
+Stepped:Disconnect()
+end
+end)
+elseif Status.Text == "on" then
+Clipon = false
+Status.Text = "off"
+Status.TextColor3 = Color3.new(170,0,0)
+end
+end)
+end)
+
+Window:AddCommand('f3x', {}, 'build stuff or whatever also CLIENT SIDED.', function(Arguments, Speaker)
+	loadstring(game:GetObjects("rbxassetid://6695644299")[1].Source)()
+end)
+
+Window:AddCommand('Btools', {}, 'do what whatever also CLIENT SIDED.', function(Arguments, Speaker)
+	loadstring(game:GetObjects("rbxassetid://6695644299")[1].Source)()
+end)
+
+Window:AddCommand('DeleteToolMesh', {}, 'Removes Your Tool Mesh.', function(Arguments, Speaker)
+    local tool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+	tool.Handle.Mesh:Destroy()
+	tool.Parent = game.Players.LocalPlayer.Backpack
+	tool.Parent = game.Players.LocalPlayer.Character
+end)
+
+Window:AddCommand('GiveLightingTools', {}, 'Gives Tools To you when there are tools on lighting.', function(Arguments, Speaker)
+    for i, v in pairs(game.Lighting:GetChildren()) do
+	v.Parent = game.Players.LocalPlayer.Backpack
+	end
+end)
+
+Window:AddCommand('ToolEditor', {}, 'Do something with your tool.', function(Arguments, Speaker)
+	loadstring(game:HttpGet(('https://pastebin.com/raw/kTS6dxCM'),true))()
+end)
+
+Window:AddCommand('SizeChanger', {}, 'make your body bigger only R6.', function(Arguments, Speaker)
+	function giant(p, size)	
+	local pchar = p.Character
+	if pchar then
+		local function scale(chr,scl)
+		
+			for _,v in pairs(pchar:GetChildren()) do
+				if v:IsA("Hat") then
+					v:Clone()
+					v.Parent = game.Lighting
+				end
+			end
+				
+		    local Head = chr['Head']
+		    local Torso = chr['Torso']
+		    local LA = chr['Left Arm']
+		    local RA = chr['Right Arm']
+		    local LL = chr['Left Leg']
+		    local RL = chr['Right Leg']
+		    local HRP = chr['HumanoidRootPart']
+		
+		    wait(0.1)
+		   
+		    Head.formFactor = 3
+		    Torso.formFactor = 3
+		    LA.formFactor = 3
+		    RA.formFactor = 3
+		    LL.formFactor = 3
+		    RL.formFactor = 3
+		    HRP.formFactor = 3
+		    
+		    Head.Size = Vector3.new(scl * 2, scl, scl)
+		    Torso.Size = Vector3.new(scl * 2, scl * 2, scl)
+		    LA.Size = Vector3.new(scl, scl * 2, scl)
+		    RA.Size = Vector3.new(scl, scl * 2, scl)
+		    LL.Size = Vector3.new(scl, scl * 2, scl)
+		    RL.Size = Vector3.new(scl, scl * 2, scl)
+		    HRP.Size = Vector3.new(scl * 2, scl * 2, scl)
+		    
+		    local Motor1 = Instance.new('Motor6D', Torso)
+		    Motor1.Part0 = Torso
+		    Motor1.Part1 = Head
+	    	Motor1.C0 = CFrame.new(0, 1 * scl, 0) * CFrame.Angles(-1.6, 0, 3.1)
+	    	Motor1.C1 = CFrame.new(0, -0.5 * scl, 0) * CFrame.Angles(-1.6, 0, 3.1)
+	    	Motor1.Name = "Neck"
+				    
+	    	local Motor2 = Instance.new('Motor6D', Torso)
+	    	Motor2.Part0 = Torso
+	    	Motor2.Part1 = LA
+	    	Motor2.C0 = CFrame.new(-1 * scl, 0.5 * scl, 0) * CFrame.Angles(0, -1.6, 0)
+	    	Motor2.C1 = CFrame.new(0.5 * scl, 0.5 * scl, 0) * CFrame.Angles(0, -1.6, 0)
+	    	Motor2.Name = "Left Shoulder"
+	    	
+	    	local Motor3 = Instance.new('Motor6D', Torso)
+	   		Motor3.Part0 = Torso
+	    	Motor3.Part1 = RA
+	    	Motor3.C0 = CFrame.new(1 * scl, 0.5 * scl, 0) * CFrame.Angles(0, 1.6, 0)
+	    	Motor3.C1 = CFrame.new(-0.5 * scl, 0.5 * scl, 0) * CFrame.Angles(0, 1.6, 0)
+	    	Motor3.Name = "Right Shoulder"
+	    	
+	    	local Motor4 = Instance.new('Motor6D', Torso)
+	    	Motor4.Part0 = Torso
+	    	Motor4.Part1 = LL
+	    	Motor4.C0 = CFrame.new(-1 * scl, -1 * scl, 0) * CFrame.Angles(0, -1.6, 0)
+	    	Motor4.C1 = CFrame.new(-0.5 * scl, 1 * scl, 0) * CFrame.Angles(0, -1.6, 0)
+	    	Motor4.Name = "Left Hip"
+	    	
+	    	local Motor5 = Instance.new('Motor6D', Torso)
+	    	Motor5.Part0 = Torso
+	    	Motor5.Part1 = RL
+	    	Motor5.C0 = CFrame.new(1 * scl, -1 * scl, 0) * CFrame.Angles(0, 1.6, 0)
+	    	Motor5.C1 = CFrame.new(0.5 * scl, 1 * scl, 0) * CFrame.Angles(0, 1.6, 0)
+	    	Motor5.Name = "Right Hip"
+	    	
+	    	local Motor6 = Instance.new('Motor6D', HRP)
+	    	Motor6.Part0 = HRP
+	    	Motor6.Part1 = Torso
+	    	Motor6.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(-1.6, 0, -3.1)
+	    	Motor6.C1 = CFrame.new(0, 0, 0) * CFrame.Angles(-1.6, 0, -3.1)
+	    	    
+		end
+		
+		scale(pchar, size)
+		pchar.Humanoid.WalkSpeed = 15 * size
+	
+		for _,v in pairs(game.Lighting:GetChildren()) do
+			if v:IsA("Hat") then
+				v.Parent = pchar
+			end
+		end
+	end
+end
+
+local plr = game.Players.LocalPlayer
+giant(plr,1)
+
+
+local csize = 1
+
+local sgui = Instance.new("ScreenGui", game.Players.LocalPlayer.PlayerGui)
+local base = Instance.new("Frame", sgui)
+base.BackgroundTransparency = 1
+base.Size = UDim2.new(0, 110, 0, 200)
+base.Position = UDim2.new(1, -120, 1, -180)
+local indicator = Instance.new("TextLabel", base)
+indicator.Size = UDim2.new(1, 0, 0, 25)
+indicator.TextColor3 = Color3.new(1, 1, 1)
+indicator.BackgroundTransparency = 0
+indicator.FontSize = Enum.FontSize.Size18
+indicator.Font = Enum.Font.SourceSans
+indicator.Text = "Current Size: 3"
+local PlusOne = Instance.new("TextButton", base)
+PlusOne.BackgroundColor3 = Color3.new(214/255, 214/255, 214/255)
+PlusOne.Position = UDim2.new(0, 0, 0, 40)
+PlusOne.Size = UDim2.new(1, 0, 0.5, -50)
+PlusOne.BorderSizePixel = 2
+PlusOne.Font = Enum.Font.SourceSansBold
+PlusOne.FontSize = Enum.FontSize.Size24
+PlusOne.Text = "+.1 Size"
+local MinusOne = Instance.new("TextButton", base)
+MinusOne.BackgroundColor3 = Color3.new(214/255, 214/255, 214/255)
+MinusOne.Position = UDim2.new(0, 0, 0.5, 10)
+MinusOne.Size = UDim2.new(1, 0, 0.5, -50)
+MinusOne.Text = "-.1 Size"
+MinusOne.BorderSizePixel = 2
+MinusOne.Font = Enum.Font.SourceSansBold
+MinusOne.FontSize = Enum.FontSize.Size24
+
+PlusOne.MouseButton1Down:connect(function()
+	csize = csize + .1
+	giant(plr, csize)
+	indicator.Text = "Current Size: "..tostring(csize)
+end)
+
+MinusOne.MouseButton1Down:connect(function()
+	csize = csize - .1
+	giant(plr, csize)
+	indicator.Text = "Current Size: "..tostring(csize)
+end)
+end)
+
+Window:AddCommand('Freeze', {}, 'Freeze your self.', function(Arguments, Speaker)
+    game:GetService("Workspace").CJFabro8.Head.Anchored = true
+	game:GetService("Workspace").CJFabro8.HumanoidRootPart.Anchored = true
+	game:GetService("Workspace").CJFabro8["Left Arm"].Anchored = true
+	game:GetService("Workspace").CJFabro8["Left Leg"].Anchored = true
+	game:GetService("Workspace").CJFabro8["Right Arm"].Anchored = true
+	game:GetService("Workspace").CJFabro8["Right Leg"].Anchored = true
+	game:GetService("Workspace").CJFabro8.Torso.Anchored = true
+end)
+
+Window:AddCommand('UnFreeze', {}, 'UnFreeze your self.', function(Arguments, Speaker)
+    game:GetService("Workspace").CJFabro8.Head.Anchored = false
+	game:GetService("Workspace").CJFabro8.HumanoidRootPart.Anchored = false
+	game:GetService("Workspace").CJFabro8["Left Arm"].Anchored = false
+	game:GetService("Workspace").CJFabro8["Left Leg"].Anchored = false
+	game:GetService("Workspace").CJFabro8["Right Arm"].Anchored = false
+	game:GetService("Workspace").CJFabro8["Right Leg"].Anchored = false
+	game:GetService("Workspace").CJFabro8.Torso.Anchored = false
+end)
+
+Window:AddCommand('FreezeGui', {}, 'a freeze gui so you dont have to put the freeze command.', function(Arguments, Speaker)
+	local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TextButton = Instance.new("TextButton")
+local UICorner_2 = Instance.new("UICorner")
+local TextButton_2 = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.Position = UDim2.new(0.275968999, 0, 0.586419761, 0)
+Frame.Size = UDim2.new(0, 453, 0, 110)
+
+UICorner.CornerRadius = UDim.new(0, 100)
+UICorner.Parent = Frame
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(164, 228, 255)
+TextButton.Position = UDim2.new(0.0400000066, 0, 0.272254348, 0)
+TextButton.Size = UDim2.new(0, 200, 0, 50)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Freeze"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextScaled = true
+TextButton.TextSize = 14.000
+TextButton.TextWrapped = true
+TextButton.MouseButton1Click:connect(function()
+	game:GetService("Workspace").CJFabro8.Head.Anchored = true
+	game:GetService("Workspace").CJFabro8.HumanoidRootPart.Anchored = true
+	game:GetService("Workspace").CJFabro8["Left Arm"].Anchored = true
+	game:GetService("Workspace").CJFabro8["Left Leg"].Anchored = true
+	game:GetService("Workspace").CJFabro8["Right Arm"].Anchored = true
+	game:GetService("Workspace").CJFabro8["Right Leg"].Anchored = true
+	game:GetService("Workspace").CJFabro8.Torso.Anchored = true
+end)
+
+UICorner_2.CornerRadius = UDim.new(0, 100)
+UICorner_2.Parent = TextButton
+
+TextButton_2.Parent = Frame
+TextButton_2.BackgroundColor3 = Color3.fromRGB(164, 228, 255)
+TextButton_2.Position = UDim2.new(0.529895127, 0, 0.272254348, 0)
+TextButton_2.Size = UDim2.new(0, 200, 0, 50)
+TextButton_2.Font = Enum.Font.SourceSans
+TextButton_2.Text = "UnFreeze"
+TextButton_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_2.TextScaled = true
+TextButton_2.TextSize = 14.000
+TextButton_2.TextWrapped = true
+TextButton_2.MouseButton1Click:connect(function()
+	game:GetService("Workspace").CJFabro8.Head.Anchored = false
+	game:GetService("Workspace").CJFabro8.HumanoidRootPart.Anchored = false
+	game:GetService("Workspace").CJFabro8["Left Arm"].Anchored = false
+	game:GetService("Workspace").CJFabro8["Left Leg"].Anchored = false
+	game:GetService("Workspace").CJFabro8["Right Arm"].Anchored = false
+	game:GetService("Workspace").CJFabro8["Right Leg"].Anchored = false
+	game:GetService("Workspace").CJFabro8.Torso.Anchored = false
+end)
+
+UICorner_3.CornerRadius = UDim.new(0, 100)
+UICorner_3.Parent = TextButton_2
+
+-- Scripts:
+
+local function EXBQCTU_fake_script() -- Frame.LocalScript 
+	local script = Instance.new('LocalScript', Frame)
+
+	local UserInputService = game:GetService("UserInputService")
+	
+	local gui = script.Parent
+	
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+	
+	local function update(input)
+		local delta = input.Position - dragStart
+		gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+	
+	gui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = gui.Position
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	gui.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+end
+coroutine.wrap(EXBQCTU_fake_script)()
+
+end)
