@@ -813,3 +813,65 @@ end
 coroutine.wrap(EXBQCTU_fake_script)()
 
 end)
+
+Window:AddCommand('Shrek', {}, 'Become Shrek Also CLIENT SIDED.', function(Arguments, Speaker)
+	Player=game:GetService("Players").LocalPlayer --hi
+Character=Player.Character
+PlayerGui=Player.PlayerGui
+Backpack=Player.Backpack
+Torso=Character.Torso
+Head=Character.Head
+Humanoid=Character.Humanoid
+m=Instance.new('Model',Character)
+LeftArm=Character["Left Arm"]
+LeftLeg=Character["Left Leg"]
+RightArm=Character["Right Arm"]
+RightLeg=Character["Right Leg"]
+LS=Torso["Left Shoulder"]
+LH=Torso["Left Hip"]
+RS=Torso["Right Shoulder"]
+RH=Torso["Right Hip"]
+function Weld(x,y)
+       local W = Instance.new("Weld")
+       W.Part0 = x
+       W.Part1 = y
+       local CJ = CFrame.new(x.Position)
+       local C0 = x.CFrame:inverse()*CJ
+       local C1 = y.CFrame:inverse()*CJ
+       W.C0 = C0
+       W.C1 = C1
+       W.Parent = x
+end
+Head.Transparency=1
+Torso.Transparency=1
+RightArm.Transparency=1
+LeftArm.Transparency=1
+RightLeg.Transparency=1
+LeftLeg.Transparency=1
+fuc=Instance.new("Part",workspace) --made by credit so give credit you mother fucker111
+fuc.CFrame=Torso.CFrame
+fuc.CanCollide=false
+fuck=Instance.new("SpecialMesh")
+fuck.Parent=fuc
+fuck.MeshType="FileMesh"
+fuck.Scale=Vector3.new(0.1,0.1,0.1) --size
+fuck.TextureId="rbxassetid://430571813" --Texture / Skin
+fuck.MeshId="rbxassetid://430571807" -- Mesh Id
+Weld(Torso,fuc)
+
+for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+if v:IsA("Accessory") and v.Handle:FindFirstChild("SpecialMesh") then
+v:Destroy()
+end
+end
+
+for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+if v:IsA("Accessory") and v.Handle:FindFirstChild("Mesh") then
+v:Destroy()
+end
+end
+end)
+
+Window:AddCommand('Creeper', {}, 'Become a creeper.', function(Arguments, Speaker)
+	loadstring(game:HttpGet("https://pastebin.com/raw/GDKYs5Ec",true))();
+end)
