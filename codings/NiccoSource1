@@ -1,0 +1,159 @@
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Air.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Plant.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Space.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Lightning.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Earth.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Dark.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Fire.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Light.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Metal.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
+
+getgenv().farm = true -- change autofarm to any name you want
+
+while getgenv().farm == true and task.wait() do -- you can change task.wait() to wait()
+    pcall( -- script is not being interrupted if errors occur in functions called with pcall
+        function() -- normal function
+            for _, v in pairs(game:GetService("Workspace")["Zednov's Tycoon Kit"].Tycoons.Water.Essentials.Giver:GetDescendants()) do -- change the path of game:GetService("Workspace") to the path you got from Dark Dex
+                if v:IsA("TouchTransmitter") then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 0)
+                    wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v.Parent, 1)
+            end
+        end
+    end
+    )
+end
