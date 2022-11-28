@@ -1,18 +1,11 @@
--- Gui to Lua
--- Version: 3.2
-
--- Instances:
-
 local NGUI = Instance.new("ScreenGui")
 local nframe = Instance.new("Frame")
 local title = Instance.new("TextLabel")
 local info = Instance.new("TextLabel")
 local close = Instance.new("TextButton")
 
---Properties:
-
 NGUI.Name = "NGUI"
-NGUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+NGUI.Parent = game.CoreGui
 NGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 nframe.Name = "nframe"
