@@ -1,0 +1,72 @@
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local NGUI = Instance.new("ScreenGui")
+local nframe = Instance.new("Frame")
+local title = Instance.new("TextLabel")
+local info = Instance.new("TextLabel")
+local close = Instance.new("TextButton")
+
+--Properties:
+
+NGUI.Name = "NGUI"
+NGUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+NGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+nframe.Name = "nframe"
+nframe.Parent = NGUI
+nframe.BackgroundColor3 = Color3.fromRGB(84, 84, 84)
+nframe.BackgroundTransparency = 0.500
+nframe.Position = UDim2.new(0.0243605357, 0, 0.800338387, 0)
+nframe.Size = UDim2.new(0, 274, 0, 100)
+
+title.Name = "title"
+title.Parent = nframe
+title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1.000
+title.Size = UDim2.new(0, 274, 0, 27)
+title.Font = Enum.Font.SourceSansBold
+title.Text = "Notification"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.TextSize = 14.000
+title.TextWrapped = true
+
+info.Name = "info"
+info.Parent = nframe
+info.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+info.BackgroundTransparency = 1.000
+info.Position = UDim2.new(0, 0, 0.270000011, 0)
+info.Size = UDim2.new(0, 274, 0, 73)
+info.Font = Enum.Font.SourceSansBold
+info.Text = "made by american states and russian"
+info.TextColor3 = Color3.fromRGB(255, 255, 255)
+info.TextScaled = true
+info.TextSize = 14.000
+info.TextWrapped = true
+
+close.Name = "close"
+close.Parent = nframe
+close.BackgroundColor3 = Color3.fromRGB(255, 85, 0)
+close.BorderSizePixel = 0
+close.Position = UDim2.new(0.890510976, 0, 0, 0)
+close.Size = UDim2.new(0, 30, 0, 27)
+close.Font = Enum.Font.SourceSansBold
+close.Text = "X"
+close.TextColor3 = Color3.fromRGB(244, 244, 244)
+close.TextScaled = true
+close.TextSize = 14.000
+close.TextWrapped = true
+
+-- Scripts:
+
+local function GAZBX_fake_script() -- close.CloseGuiButtonScript 
+	local script = Instance.new('Script', close)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Visible = false
+	end)
+end
+coroutine.wrap(GAZBX_fake_script)()
