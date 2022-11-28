@@ -1,5 +1,5 @@
 
---if you died to need to execute it again
+--lel also it doesnt work sometimes
 function sandbox(var,func)
 	local env = getfenv(func)
 	local newenv = setmetatable({},{
