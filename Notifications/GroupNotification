@@ -1,0 +1,147 @@
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local NotificationGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Design = Instance.new("ImageLabel")
+local TextLabel = Instance.new("TextLabel")
+local TextLabel_2 = Instance.new("TextLabel")
+local Close = Instance.new("ImageLabel")
+local TextButton = Instance.new("TextButton")
+
+--Properties:
+
+NotificationGui.Name = "NotificationGui"
+NotificationGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+Frame.Parent = NotificationGui
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 1.000
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.382044554, 0, 0.356573701, 0)
+Frame.Size = UDim2.new(0.300000012, 0, 0.300000012, 0)
+
+Design.Name = "Design"
+Design.Parent = Frame
+Design.AnchorPoint = Vector2.new(0.5, 0.5)
+Design.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Design.BackgroundTransparency = 1.000
+Design.Position = UDim2.new(0.5, 0, 0.5, 0)
+Design.Size = UDim2.new(1, 0, 1, 0)
+Design.Image = "rbxassetid://3570695787"
+Design.ImageColor3 = Color3.fromRGB(0, 147, 220)
+Design.ScaleType = Enum.ScaleType.Slice
+Design.SliceCenter = Rect.new(100, 100, 100, 100)
+Design.SliceScale = 0.120
+
+TextLabel.Parent = Design
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.Size = UDim2.new(1, 0, 0.285524756, 0)
+TextLabel.Font = Enum.Font.SourceSansBold
+TextLabel.Text = "Notification"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextStrokeTransparency = 0.000
+TextLabel.TextWrapped = true
+
+TextLabel_2.Parent = Design
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.BackgroundTransparency = 1.000
+TextLabel_2.Position = UDim2.new(0, 0, 0.285524666, 0)
+TextLabel_2.Size = UDim2.new(1, 0, 0.34608236, 0)
+TextLabel_2.Font = Enum.Font.SourceSansBold
+TextLabel_2.Text = "+9999999999999999999999999999 Points"
+TextLabel_2.TextColor3 = Color3.fromRGB(0, 255, 0)
+TextLabel_2.TextScaled = true
+TextLabel_2.TextSize = 14.000
+TextLabel_2.TextStrokeTransparency = 0.000
+TextLabel_2.TextWrapped = true
+
+Close.Name = "Close"
+Close.Parent = Frame
+Close.AnchorPoint = Vector2.new(0.5, 0.5)
+Close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Close.BackgroundTransparency = 1.000
+Close.Position = UDim2.new(0.497815698, 0, 0.803486168, 0)
+Close.Size = UDim2.new(0.505329788, 0, 0.250796795, 0)
+Close.Image = "rbxassetid://3570695787"
+Close.ImageColor3 = Color3.fromRGB(255, 0, 0)
+Close.ScaleType = Enum.ScaleType.Slice
+Close.SliceCenter = Rect.new(100, 100, 100, 100)
+Close.SliceScale = 0.120
+
+TextButton.Parent = Close
+TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.BackgroundTransparency = 1.000
+TextButton.BorderSizePixel = 0
+TextButton.Size = UDim2.new(1, 0, 1, 0)
+TextButton.ZIndex = 3
+TextButton.Font = Enum.Font.SourceSansBold
+TextButton.Text = "Add To Points"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextScaled = true
+TextButton.TextSize = 14.000
+TextButton.TextStrokeTransparency = 0.000
+TextButton.TextWrapped = true
+TextButton.MouseButton1Down:connect(function()
+	--add script here
+end)
+
+-- Scripts:
+
+local function AQPKCPR_fake_script() -- TextButton.LocalScript 
+	local script = Instance.new('LocalScript', TextButton)
+
+	script.Parent.MouseButton1Down:Connect(function()
+		script.Parent.Parent.Parent.Visible = false
+	end)
+end
+coroutine.wrap(AQPKCPR_fake_script)()
+local function DOYNYP_fake_script() -- Frame.LocalScript 
+	local script = Instance.new('LocalScript', Frame)
+
+	local UserInputService = game:GetService("UserInputService")
+	
+	local gui = script.Parent
+	
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+	
+	local function update(input)
+		local delta = input.Position - dragStart
+		gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+	
+	gui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = gui.Position
+			
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	gui.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+end
+coroutine.wrap(DOYNYP_fake_script)()
