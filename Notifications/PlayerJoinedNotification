@@ -1,0 +1,69 @@
+
+--Converted with ttyyuu12345's model to script plugin v4 -- credits to this too
+function sandbox(var,func)
+	local env = getfenv(func)
+	local newenv = setmetatable({},{
+		__index = function(self,k)
+			if k=="script" then
+				return var
+			else
+				return env[k]
+			end
+		end,
+	})
+	setfenv(func,newenv)
+	return func
+end
+cors = {}
+mas = Instance.new("Model",game:GetService("Lighting"))
+ScreenGui0 = Instance.new("ScreenGui")
+TextLabel1 = Instance.new("TextLabel")
+Script2 = Instance.new("Script")
+Sound3 = Instance.new("Sound")
+ScreenGui0.Parent = mas
+TextLabel1.Parent = ScreenGui0
+TextLabel1.Position = UDim2.new(0, -500, 0.5, 0)
+TextLabel1.Size = UDim2.new(0, 500, 0, 50)
+TextLabel1.BackgroundColor = BrickColor.new("Institutional white")
+TextLabel1.BackgroundColor3 = Color3.new(1, 1, 1)
+TextLabel1.BorderSizePixel = 0
+TextLabel1.Font = Enum.Font.SourceSansLight
+TextLabel1.FontSize = Enum.FontSize.Size48
+TextLabel1.Text = " "
+TextLabel1.TextSize = 48
+Script2.Parent = TextLabel1
+table.insert(cors,sandbox(Script2,function()
+
+
+local sound = script.Parent.Parent.NotificationSound
+local Players = game:GetService("Players")
+ 
+function onPlayerAdded(player)
+     script.Parent.Text = player.Name .. " has joined the game"
+	wait(2)
+	script.Parent:TweenPosition(UDim2.new(0,0,0.5,0))
+	sound:Play()
+	wait(4)
+	script.Parent:TweenPosition(UDim2.new(0,-500,0.5,0))
+end
+ 
+Players.PlayerAdded:connect(onPlayerAdded)
+ 
+for _,player in pairs(Players:GetPlayers()) do
+     onPlayerAdded(player)
+end
+end))
+Sound3.Name = "NotificationSound"
+Sound3.Parent = ScreenGui0
+Sound3.SoundId = "rbxassetid://487950094"
+Sound3.Volume = 3
+for i,v in pairs(mas:GetChildren()) do
+	v.Parent = game:GetService("Players").LocalPlayer.PlayerGui
+	pcall(function() v:MakeJoints() end)
+end
+mas:Destroy()
+for i,v in pairs(cors) do
+	spawn(function()
+		pcall(v)
+	end)
+end
